@@ -59,7 +59,7 @@ namespace Tarczynews.Controllers
         {
             try
             {
-                var model = tarczynCaps.FirstOrDefault(x => x.Number == cap.Number);
+                var model = tarczynCaps.FirstOrDefault(x => x.Id == cap.Id);
                 if (model != null)
                 {
                     model.Number = cap.Number;
@@ -84,11 +84,12 @@ namespace Tarczynews.Controllers
         // POST: CapsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeletePost(int id)
+        [ActionName("Delete")]
+        public ActionResult DeletePost(Guid id)
         {
             try
             {
-                var cap = tarczynCaps.FirstOrDefault(x => x.Number == id);
+                var cap = tarczynCaps.FirstOrDefault(x => x.Id == id);
                 if (cap != null)
                 {
                     tarczynCaps.Remove(cap);
