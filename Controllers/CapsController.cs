@@ -38,7 +38,7 @@ namespace Tarczynews.Controllers
 
             if(storedCap != null)
             {
-                ViewBag.Error = "You already have cap with this number";
+                TempData["Error"] = "You already have cap with this number";
 
                 return View(tarczynCap);
             }
@@ -50,7 +50,7 @@ namespace Tarczynews.Controllers
                 Number = tarczynCap.Number,
                 Message = tarczynCap.Message
             });
-            ViewBag.Success = $"Cap {tarczynCap.Number} was created successfully";
+            TempData["Success"] = $"Cap {tarczynCap.Number} was created successfully";
 
             return RedirectToAction(nameof(Index));
         }
@@ -77,7 +77,7 @@ namespace Tarczynews.Controllers
 
                 if(storedCapWithNumber != null)
                 {
-                    ViewBag.Error = "There is a cap with this number already";
+                    TempData["Error"] = "There is a cap with this number already";
 
                     return View("Edit", tarczynCap);
                 }
@@ -89,7 +89,7 @@ namespace Tarczynews.Controllers
                 storedCap.City = tarczynCap.City;
                 storedCap.Message = tarczynCap.Message;
 
-                ViewBag.Success = $"Cap {tarczynCap.Number} edited successfully";
+                TempData["Success"] = $"Cap {tarczynCap.Number} edited successfully";
             }
 
             return RedirectToAction(nameof(Index));
@@ -114,11 +114,11 @@ namespace Tarczynews.Controllers
             {
                 tarczynCaps.Remove(cap);
 
-                ViewBag.Success = $"Cap {cap.Number} removed successfully";
+                TempData["Success"] = $"Cap {cap.Number} removed successfully";
             }
             else
             {
-                ViewBag.Error = $"Deleting cap was not successful";
+                TempData["Error"] = $"Deleting cap was not successful";
             }
 
             return RedirectToAction(nameof(Index));
