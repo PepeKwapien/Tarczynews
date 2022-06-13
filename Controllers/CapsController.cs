@@ -19,6 +19,7 @@ namespace Tarczynews.Controllers
         public ActionResult Details(int id)
         {
             var cap = tarczynCaps.FirstOrDefault(x => x.Number == id);
+
             return cap != null ? View(cap) : View("Index");
         }
 
@@ -33,51 +34,72 @@ namespace Tarczynews.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(TarczynCap tarczynCap)
         {
-            try
+            var storedCap = tarczynCaps.FirstOrDefault(cap => cap.Number == tarczynCap.Number);
+
+            if(storedCap != null)
             {
-                tarczynCaps.Add(new TarczynCap() { Id = Guid.NewGuid(), City = tarczynCap.City,
-                    Number = tarczynCap.Number, Message = tarczynCap.Message});
-                return RedirectToAction(nameof(Index));
+                ViewBag.Error = "You already have cap with this number";
+
+                return View(tarczynCap);
             }
-            catch
+
+            tarczynCaps.Add(new TarczynCap()
             {
-                return View();
-            }
+                Id = Guid.NewGuid(),
+                City = tarczynCap.City,
+                Number = tarczynCap.Number,
+                Message = tarczynCap.Message
+            });
+            ViewBag.Success = $"Cap {tarczynCap.Number} was created successfully";
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: CapsController/Edit/5
         public ActionResult Edit(int id)
         {
             var cap = tarczynCaps.FirstOrDefault(x => x.Number == id);
+
             return cap != null ? View(cap) : View("Index");
         }
 
         // POST: CapsController/Edit/5
         [HttpPost]
+        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult EditPost(TarczynCap cap)
+        public ActionResult EditPost(TarczynCap tarczynCap)
         {
-            try
+            var storedCap = tarczynCaps.FirstOrDefault(x => x.Id == tarczynCap.Id);
+
+            if(storedCap?.Number != tarczynCap.Number)
             {
-                var model = tarczynCaps.FirstOrDefault(x => x.Id == cap.Id);
-                if (model != null)
+                var storedCapWithNumber = tarczynCaps.FirstOrDefault(x => x.Number == tarczynCap.Number);
+
+                if(storedCapWithNumber != null)
                 {
-                    model.Number = cap.Number;
-                    model.City = cap.City;
-                    model.Message = cap.Message;
+                    ViewBag.Error = "There is a cap with this number already";
+
+                    return View("Edit", tarczynCap);
                 }
-                return RedirectToAction(nameof(Index));
             }
-            catch
+
+            if (storedCap != null)
             {
-                return View();
+                storedCap.Number = tarczynCap.Number;
+                storedCap.City = tarczynCap.City;
+                storedCap.Message = tarczynCap.Message;
+
+                ViewBag.Success = $"Cap {tarczynCap.Number} edited successfully";
             }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: CapsController/Delete/5
         public ActionResult Delete(int id)
         {
             var cap = tarczynCaps.FirstOrDefault(x => x.Number == id);
+
             return cap != null ? View(cap) : View("Index");
         }
 
@@ -87,19 +109,19 @@ namespace Tarczynews.Controllers
         [ActionName("Delete")]
         public ActionResult DeletePost(Guid id)
         {
-            try
+            var cap = tarczynCaps.FirstOrDefault(x => x.Id == id);
+            if (cap != null)
             {
-                var cap = tarczynCaps.FirstOrDefault(x => x.Id == id);
-                if (cap != null)
-                {
-                    tarczynCaps.Remove(cap);
-                }
-                return RedirectToAction(nameof(Index));
+                tarczynCaps.Remove(cap);
+
+                ViewBag.Success = $"Cap {cap.Number} removed successfully";
             }
-            catch
+            else
             {
-                return View();
+                ViewBag.Error = $"Deleting cap was not successful";
             }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
