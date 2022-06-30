@@ -10,6 +10,6 @@ namespace Tarczynews.Data
 
         }
 
-        public DbSet<TarczynCap> tarczynCaps { get; set; }
+        public DbSet<TarczynCap> TarczynCaps { get; set; }
     }
 }
