@@ -2,23 +2,30 @@
 using Microsoft.AspNetCore.Mvc;
 using Tarczynews.Models;
 using System.Linq;
+using Tarczynews.Data;
 
 namespace Tarczynews.Controllers
 {
     public class CapsController : Controller
     {
         public static IList<TarczynCap> tarczynCaps = new List<TarczynCap>();
+        private readonly TarczynCapContext _context;
+
+        public CapsController(TarczynCapContext tarczynCapContext)
+        {
+            _context = tarczynCapContext;
+        }
 
         // GET: CapsController
         public ActionResult Index()
         {
-            return View(tarczynCaps);
+            return View(_context.ReadAllTarczynCaps());
         }
 
         // GET: CapsController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int number)
         {
-            var cap = tarczynCaps.FirstOrDefault(x => x.Number == id);
+            var cap = _context.ReadTarczynCapByNumber(number);
             return cap != null ? View(cap) : View("Index");
         }
 

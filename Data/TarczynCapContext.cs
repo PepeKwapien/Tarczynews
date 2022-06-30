@@ -11,5 +11,15 @@ namespace Tarczynews.Data
         }
 
         public DbSet<TarczynCap> TarczynCaps { get; set; }
+
+        public IEnumerable<TarczynCap> ReadAllTarczynCaps()
+        {
+            return TarczynCaps.ToList();
+        }
+
+        public TarczynCap ReadTarczynCapByNumber(int number)
+        {
+            return TarczynCaps.FirstOrDefault(x => x.Number == number);
+        }
     }
 }
