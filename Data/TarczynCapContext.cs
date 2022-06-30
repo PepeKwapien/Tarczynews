@@ -1,11 +1,11 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 using Tarczynews.Models;
 
 namespace Tarczynews.Data
 {
     public class TarczynCapContext : DbContext
     {
-        public TarczynCapContext() : base("TarczynCapContext")
+        public TarczynCapContext(DbContextOptions<TarczynCapContext> options) : base(options)
         {
 
         }
