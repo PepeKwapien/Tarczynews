@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+:root {
+    --clr-success-box: #61ff86;
+    --clr-danger-box: #e65e6b;
+}
+
+.bg-success-custom{
+    background-color: var(--clr-success-box);
+}
+
+.bg-danger-custom {
+    background-color: var(--clr-danger-box);
+}
