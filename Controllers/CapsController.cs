@@ -19,14 +19,22 @@ namespace Tarczynews.Controllers
         // GET: CapsController
         public ActionResult Index()
         {
-            return View(_context.ReadAllTarczynCaps());
+            return View(_context.ReadAllTarczynCapsSortedAscendingByNumber());
         }
 
         // GET: CapsController/Details/5
         public ActionResult Details(int number)
         {
             var cap = _context.ReadTarczynCapByNumber(number);
-            return cap != null ? View(cap) : View("Index");
+
+            if (cap == null)
+            {
+                TempData["Error"] = "You do not have cap with this number";
+
+                return View("Index");
+            }
+
+            return View(cap);
         }
 
         // GET: CapsController/Create
@@ -40,7 +48,7 @@ namespace Tarczynews.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(TarczynCap tarczynCap)
         {
-            var storedCap = tarczynCaps.FirstOrDefault(cap => cap.Number == tarczynCap.Number);
+            var storedCap = _context.ReadTarczynCapByNumber(tarczynCap.Number);
 
             if(storedCap != null)
             {
@@ -49,24 +57,26 @@ namespace Tarczynews.Controllers
                 return View(tarczynCap);
             }
 
-            tarczynCaps.Add(new TarczynCap()
-            {
-                Id = Guid.NewGuid(),
-                City = tarczynCap.City,
-                Number = tarczynCap.Number,
-                Message = tarczynCap.Message
-            });
+            _context.Create(tarczynCap);
+
             TempData["Success"] = $"Cap {tarczynCap.Number} was created successfully";
 
             return RedirectToAction(nameof(Index));
         }
 
         // GET: CapsController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int number)
         {
-            var cap = tarczynCaps.FirstOrDefault(x => x.Number == id);
+            var cap = _context.ReadTarczynCapByNumber(number);
 
-            return cap != null ? View(cap) : View("Index");
+            if (cap == null)
+            {
+                TempData["Error"] = "You do not have cap with this number";
+
+                return View("Index");
+            }
+
+            return View(cap);
         }
 
         // POST: CapsController/Edit/5
@@ -75,38 +85,45 @@ namespace Tarczynews.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditPost(TarczynCap tarczynCap)
         {
-            var storedCap = tarczynCaps.FirstOrDefault(x => x.Id == tarczynCap.Id);
+            var storedCap = _context.Read(tarczynCap.Id);
 
-            if(storedCap?.Number != tarczynCap.Number)
+            if(storedCap == null)
             {
-                var storedCapWithNumber = tarczynCaps.FirstOrDefault(x => x.Number == tarczynCap.Number);
-
-                if(storedCapWithNumber != null)
-                {
-                    TempData["Error"] = "There is a cap with this number already";
-
-                    return View("Edit", tarczynCap);
-                }
+                TempData["Error"] = "There was an error while trying to find this cap";
             }
-
-            if (storedCap != null)
+            else
             {
-                storedCap.Number = tarczynCap.Number;
-                storedCap.City = tarczynCap.City;
-                storedCap.Message = tarczynCap.Message;
+                if (storedCap.Number != tarczynCap.Number)
+                {
+                    var storedCapWithNumber = tarczynCaps.FirstOrDefault(x => x.Number == tarczynCap.Number);
 
-                TempData["Success"] = $"Cap {tarczynCap.Number} edited successfully";
+                    if (storedCapWithNumber != null)
+                    {
+                        TempData["Error"] = "There is a cap with this number already";
+
+                        return View("Edit", tarczynCap);
+                    }
+                }
+
+                _context.Update(tarczynCap);
             }
 
             return RedirectToAction(nameof(Index));
         }
 
         // GET: CapsController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int number)
         {
-            var cap = tarczynCaps.FirstOrDefault(x => x.Number == id);
+            var cap = _context.ReadTarczynCapByNumber(number);
 
-            return cap != null ? View(cap) : View("Index");
+            if (cap == null)
+            {
+                TempData["Error"] = "You do not have cap with this number";
+
+                return View("Index");
+            }
+
+            return View(cap);
         }
 
         // POST: CapsController/Delete/5
@@ -115,12 +132,13 @@ namespace Tarczynews.Controllers
         [ActionName("Delete")]
         public ActionResult DeletePost(Guid id)
         {
-            var cap = tarczynCaps.FirstOrDefault(x => x.Id == id);
+            var cap = _context.Read(id);
             if (cap != null)
             {
-                tarczynCaps.Remove(cap);
+                var number = cap.Number;
+                _context.Delete(id);
 
-                TempData["Success"] = $"Cap {cap.Number} removed successfully";
+                TempData["Success"] = $"Cap {number} removed successfully";
             }
             else
             {
