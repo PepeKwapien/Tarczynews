@@ -3,11 +3,10 @@ using Tarczynews.Models;
 
 namespace Tarczynews.Data
 {
-    public class TarczynCapContext : DbContext
+    public class TarczynCapContext : DbContext, IDataAccess
     {
         public TarczynCapContext(DbContextOptions<TarczynCapContext> options) : base(options)
         {
-
         }
 
         public DbSet<TarczynCap> TarczynCaps { get; set; }

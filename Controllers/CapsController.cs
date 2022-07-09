@@ -11,9 +11,9 @@ namespace Tarczynews.Controllers
         public static IList<TarczynCap> tarczynCaps = new List<TarczynCap>();
         private readonly TarczynCapContext _context;
 
-        public CapsController(TarczynCapContext tarczynCapContext)
+        public CapsController(IDataAccess tarczynCapContext)
         {
-            _context = tarczynCapContext;
+            _context = (TarczynCapContext)tarczynCapContext;
         }
 
         // GET: CapsController
