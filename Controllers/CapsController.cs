@@ -106,6 +106,7 @@ namespace Tarczynews.Controllers
                 }
 
                 _context.Update(tarczynCap);
+                TempData["Success"] = $"Cap {tarczynCap.Number} was updated successfully";
             }
 
             return RedirectToAction(nameof(Index));
