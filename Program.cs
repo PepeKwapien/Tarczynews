@@ -8,13 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
-builder.Services.AddSingleton<IDataAccess>(da => new TarczynCapContext((new DbContextOptionsBuilder<TarczynCapContext>())
-    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")).Options));
-builder.Services.AddScoped<ITarczynCapRepository, TarczynCapRepository>();
+// Old way of accessing data before using repositories
+/*builder.Services.AddSingleton<IDataAccess>(da => new TarczynCapContext((new DbContextOptionsBuilder<TarczynCapContext>())
+    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")).Options));*/
 
-/*builder.Services.AddDbContext<TarczynCapContext>(options => options.UseSqlServer(
+builder.Services.AddDbContext<TarczynCapContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")));
-*/
+
+builder.Services.AddScoped<ITarczynCapRepository, TarczynCapRepository>();
 
 var app = builder.Build();
 

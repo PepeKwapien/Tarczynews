@@ -5,16 +5,16 @@ namespace Tarczynews.Repositories
 {
     public class TarczynCapRepository : ITarczynCapRepository
     {
-        private readonly IDataAccess _dataAccess;
+        private readonly TarczynCapContext _context;
 
-        public TarczynCapRepository(IDataAccess dataAccess)
+        public TarczynCapRepository(TarczynCapContext context)
         {
-            _dataAccess = dataAccess;
+            _context = context;
         }
 
         public void Create(TarczynCap tarczynCap)
         {
-            _dataAccess.ReadAllTarczynCaps().ToList().Add(new TarczynCap(tarczynCap));
+            _context.TarczynCaps.Add(new TarczynCap(tarczynCap));
             Save();
         }
 
@@ -24,24 +24,24 @@ namespace Tarczynews.Repositories
 
             if (storedCap != null)
             {
-                ReadAll().ToList().Remove(storedCap);
+                _context.TarczynCaps.Remove(storedCap);
                 Save();
             }
         }
 
         public TarczynCap Read(Guid id)
         {
-            return ReadAll().FirstOrDefault(c => c.Id == id);
+            return _context.TarczynCaps.FirstOrDefault(c => c.Id == id);
         }
 
         public IEnumerable<TarczynCap> ReadAll()
         {
-            return _dataAccess.ReadAllTarczynCaps();
+            return _context.TarczynCaps.ToList();
         }
 
         public void Save()
         {
-            _dataAccess.Save();
+            _context.SaveChanges();
         }
 
         public void Update(TarczynCap tarczynCap)
