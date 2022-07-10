@@ -9,7 +9,6 @@ namespace Tarczynews.Controllers
 {
     public class CapsController : Controller
     {
-        public static IList<TarczynCap> tarczynCaps = new List<TarczynCap>();
         private readonly ITarczynCapRepository _tarczynCapRepository;
 
         public CapsController(ITarczynCapRepository tarczynCapRepository)
@@ -96,7 +95,7 @@ namespace Tarczynews.Controllers
             {
                 if (storedCap.Number != tarczynCap.Number)
                 {
-                    var storedCapWithNumber = tarczynCaps.FirstOrDefault(x => x.Number == tarczynCap.Number);
+                    var storedCapWithNumber = _tarczynCapRepository.ReadTarczynCapByNumber(tarczynCap.Number);
 
                     if (storedCapWithNumber != null)
                     {
