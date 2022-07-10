@@ -36,7 +36,7 @@ namespace Tarczynews.Repositories
 
         public IEnumerable<TarczynCap> ReadAll()
         {
-            throw new NotImplementedException();
+            return _dataAccess.ReadAllTarczynCaps();
         }
 
         public void Save()
