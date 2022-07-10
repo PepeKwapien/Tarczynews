@@ -3,29 +3,30 @@ using Microsoft.AspNetCore.Mvc;
 using Tarczynews.Models;
 using System.Linq;
 using Tarczynews.Data;
+using Tarczynews.Repositories;
 
 namespace Tarczynews.Controllers
 {
     public class CapsController : Controller
     {
         public static IList<TarczynCap> tarczynCaps = new List<TarczynCap>();
-        private readonly TarczynCapContext _context;
+        private readonly ITarczynCapRepository _tarczynCapRepository;
 
-        public CapsController(IDataAccess tarczynCapContext)
+        public CapsController(ITarczynCapRepository tarczynCapRepository)
         {
-            _context = (TarczynCapContext)tarczynCapContext;
+            _tarczynCapRepository = tarczynCapRepository;
         }
 
         // GET: CapsController
         public ActionResult Index()
         {
-            return View(_context.ReadAllTarczynCapsSortedAscendingByNumber());
+            return View(_tarczynCapRepository.ReadAllTarczynCapsSortedAscendingByNumber());
         }
 
         // GET: CapsController/Details/5
         public ActionResult Details(int number)
         {
-            var cap = _context.ReadTarczynCapByNumber(number);
+            var cap = _tarczynCapRepository.ReadTarczynCapByNumber(number);
 
             if (cap == null)
             {
@@ -48,7 +49,7 @@ namespace Tarczynews.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(TarczynCap tarczynCap)
         {
-            var storedCap = _context.ReadTarczynCapByNumber(tarczynCap.Number);
+            var storedCap = _tarczynCapRepository.ReadTarczynCapByNumber(tarczynCap.Number);
 
             if(storedCap != null)
             {
@@ -57,7 +58,7 @@ namespace Tarczynews.Controllers
                 return View(tarczynCap);
             }
 
-            _context.Create(tarczynCap);
+            _tarczynCapRepository.Create(tarczynCap);
 
             TempData["Success"] = $"Cap {tarczynCap.Number} was created successfully";
 
@@ -67,7 +68,7 @@ namespace Tarczynews.Controllers
         // GET: CapsController/Edit/5
         public ActionResult Edit(int number)
         {
-            var cap = _context.ReadTarczynCapByNumber(number);
+            var cap = _tarczynCapRepository.ReadTarczynCapByNumber(number);
 
             if (cap == null)
             {
@@ -85,7 +86,7 @@ namespace Tarczynews.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditPost(TarczynCap tarczynCap)
         {
-            var storedCap = _context.Read(tarczynCap.Id);
+            var storedCap = _tarczynCapRepository.Read(tarczynCap.Id);
 
             if(storedCap == null)
             {
@@ -105,7 +106,7 @@ namespace Tarczynews.Controllers
                     }
                 }
 
-                _context.Update(tarczynCap);
+                _tarczynCapRepository.Update(tarczynCap);
                 TempData["Success"] = $"Cap {tarczynCap.Number} was updated successfully";
             }
 
@@ -115,7 +116,7 @@ namespace Tarczynews.Controllers
         // GET: CapsController/Delete/5
         public ActionResult Delete(int number)
         {
-            var cap = _context.ReadTarczynCapByNumber(number);
+            var cap = _tarczynCapRepository.ReadTarczynCapByNumber(number);
 
             if (cap == null)
             {
@@ -133,11 +134,11 @@ namespace Tarczynews.Controllers
         [ActionName("Delete")]
         public ActionResult DeletePost(Guid id)
         {
-            var cap = _context.Read(id);
+            var cap = _tarczynCapRepository.Read(id);
             if (cap != null)
             {
                 var number = cap.Number;
-                _context.Delete(id);
+                _tarczynCapRepository.Delete(id);
 
                 TempData["Success"] = $"Cap {number} removed successfully";
             }
