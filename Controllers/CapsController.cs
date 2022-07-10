@@ -58,6 +58,7 @@ namespace Tarczynews.Controllers
             }
 
             _tarczynCapRepository.Create(tarczynCap);
+            _tarczynCapRepository.Save();
 
             TempData["Success"] = $"Cap {tarczynCap.Number} was created successfully";
 
@@ -106,6 +107,8 @@ namespace Tarczynews.Controllers
                 }
 
                 _tarczynCapRepository.Update(tarczynCap);
+                _tarczynCapRepository.Save();
+
                 TempData["Success"] = $"Cap {tarczynCap.Number} was updated successfully";
             }
 
@@ -138,6 +141,7 @@ namespace Tarczynews.Controllers
             {
                 var number = cap.Number;
                 _tarczynCapRepository.Delete(id);
+                _tarczynCapRepository.Save();
 
                 TempData["Success"] = $"Cap {number} removed successfully";
             }

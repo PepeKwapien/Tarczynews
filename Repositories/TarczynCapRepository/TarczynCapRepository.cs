@@ -15,7 +15,6 @@ namespace Tarczynews.Repositories
         public void Create(TarczynCap tarczynCap)
         {
             _context.TarczynCaps.Add(new TarczynCap(tarczynCap));
-            Save();
         }
 
         public void Delete(Guid id)
@@ -25,7 +24,6 @@ namespace Tarczynews.Repositories
             if (storedCap != null)
             {
                 _context.TarczynCaps.Remove(storedCap);
-                Save();
             }
         }
 
@@ -53,7 +51,6 @@ namespace Tarczynews.Repositories
                 if (storedCap != null)
                 {
                     storedCap.Copy(tarczynCap);
-                    Save();
                 }
             }
         }
