@@ -19,6 +19,7 @@ namespace Tarczynews.Models
         [MaxLength(100, ErrorMessage ="Your city name is too long")]
         public string? City { get; set; }
         public string? Message { get; set; }
+        public TarczynewsUser Owner { get; set; }
 
         public void Copy(TarczynCap anotherCap)
         {
