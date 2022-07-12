@@ -11,7 +11,7 @@ using Tarczynews.Data;
 
 namespace Tarczynews.Migrations
 {
-    [DbContext(typeof(TarczynCapContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20220630204427_Init")]
     partial class Init
     {

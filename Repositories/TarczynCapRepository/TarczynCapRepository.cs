@@ -5,9 +5,9 @@ namespace Tarczynews.Repositories
 {
     public class TarczynCapRepository : ITarczynCapRepository
     {
-        private readonly TarczynCapContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public TarczynCapRepository(TarczynCapContext context)
+        public TarczynCapRepository(ApplicationDbContext context)
         {
             _context = context;
         }

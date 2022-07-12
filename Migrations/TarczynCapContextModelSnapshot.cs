@@ -10,7 +10,7 @@ using Tarczynews.Data;
 
 namespace Tarczynews.Migrations
 {
-    [DbContext(typeof(TarczynCapContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class TarczynCapContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

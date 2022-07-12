@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 /*builder.Services.AddSingleton<IDataAccess>(da => new TarczynCapContext((new DbContextOptionsBuilder<TarczynCapContext>())
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")).Options));*/
 
-builder.Services.AddDbContext<TarczynCapContext>(options => options.UseSqlServer(
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ITarczynCapRepository, TarczynCapRepository>();
