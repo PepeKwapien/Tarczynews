@@ -4,9 +4,12 @@ using Tarczynews.Models;
 using System.Linq;
 using Tarczynews.Data;
 using Tarczynews.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Tarczynews.Controllers
 {
+    [Authorize]
     public class CapsController : Controller
     {
         private readonly ITarczynCapRepository _tarczynCapRepository;
