@@ -22,7 +22,7 @@ namespace Tarczynews.Controllers
         // GET: CapsController
         public ActionResult Index()
         {
-            return View(_tarczynCapRepository.ReadAllTarczynCapsSortedAscendingByNumber());
+            return View(_tarczynCapRepository.ReadAllTarczynCapsForEmailSortedAscendingByNumber(User.Identity?.Name ?? ""));
         }
 
         // GET: CapsController/Details/5

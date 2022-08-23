@@ -60,6 +60,11 @@ namespace Tarczynews.Repositories
             return ReadAll().OrderBy(cap => cap.Number);
         }
 
+        public IEnumerable<TarczynCap> ReadAllTarczynCapsForEmailSortedAscendingByNumber(string email)
+        {
+            return ReadAllTarczynCapsSortedAscendingByNumber().Where(cap => cap.Owner != null && cap.Owner.Email.Equals(email));
+        }
+
         public TarczynCap ReadTarczynCapByNumber(int number)
         {
             return ReadAll().FirstOrDefault(x => x.Number == number);
