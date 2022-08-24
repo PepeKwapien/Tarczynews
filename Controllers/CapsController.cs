@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tarczynews.Models;
-using System.Linq;
-using Tarczynews.Data;
 using Tarczynews.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,7 +19,7 @@ namespace Tarczynews.Controllers
         // GET: CapsController
         public ActionResult Index()
         {
-            return View(_tarczynCapRepository.ReadAllTarczynCapsForEmailSortedAscendingByNumber(User.Identity?.Name ?? ""));
+            return View(_tarczynCapRepository.ReadAllTarczynCapsForUsernameSortedAscendingByNumber(User.Identity?.Name ?? ""));
         }
 
         // GET: CapsController/Details/5
@@ -51,7 +48,7 @@ namespace Tarczynews.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(TarczynCap tarczynCap)
         {
-            var storedCap = _tarczynCapRepository.ReadTarczynCapByNumber(tarczynCap.Number);
+            var storedCap = _tarczynCapRepository.ReadTarczynCapByNumberAndOwnerUsername(tarczynCap.Number, User.Identity?.Name ?? "");
 
             if(storedCap != null)
             {
