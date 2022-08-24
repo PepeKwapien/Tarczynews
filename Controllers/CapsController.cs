@@ -20,7 +20,7 @@ namespace Tarczynews.Controllers
         // GET: CapsController
         public ActionResult Index()
         {
-            return View(_tarczynCapRepository.ReadAllTarczynCapsForUsernameSortedAscendingByNumber(User.Identity?.Name ?? ""));
+            return View(_tarczynCapRepository.ReadAllTarczynCapsForUsernameSortedAscendingByNumber(_tarczynewsUserRepository.ReadCurrent().UserName));
         }
 
         // GET: CapsController/Details/5
@@ -80,7 +80,6 @@ namespace Tarczynews.Controllers
             _tarczynCapRepository.Save();
 
             _tarczynewsUserRepository.Update(user);
-            _tarczynewsUserRepository.Save();
 
             TempData["Success"] = $"Cap {tarczynCap.Number} was created successfully";
 
@@ -159,7 +158,7 @@ namespace Tarczynews.Controllers
         public ActionResult DeletePost(Guid id)
         {
             var cap = _tarczynCapRepository.Read(id);
-            if (cap != null && _tarczynewsUserRepository.ReadCurrent().Id != (cap.Owner?.Id ?? ""))
+            if (cap != null && _tarczynewsUserRepository.ReadCurrent().Id.Equals(cap.Owner?.Id ?? ""))
             {
                 var number = cap.Number;
                 _tarczynCapRepository.Delete(id);
