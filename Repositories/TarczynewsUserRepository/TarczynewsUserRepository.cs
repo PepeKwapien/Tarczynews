@@ -3,7 +3,7 @@ using System.Web;
 using Microsoft.AspNetCore.Identity;
 using Tarczynews.Data;
 
-namespace Tarczynews.Repositories.TarczynewsUserRepository
+namespace Tarczynews.Repositories
 {
     public class TarczynewsUserRepository : ITarczynewsUserRepository
     {
@@ -30,7 +30,7 @@ namespace Tarczynews.Repositories.TarczynewsUserRepository
 
         public TarczynewsUser Read(Guid id)
         {
-            return _userManager.GetUserAsync(_contextAccessor.HttpContext?.User).Result;
+            return _userManager.FindByIdAsync(id.ToString()).Result;
         }
 
         public IEnumerable<TarczynewsUser> ReadAll()
@@ -45,7 +45,12 @@ namespace Tarczynews.Repositories.TarczynewsUserRepository
 
         public void Update(TarczynewsUser model)
         {
-            this._userManager.UpdateAsync(model);
+            _ = _userManager.UpdateAsync(model).Result;
+        }
+
+        public TarczynewsUser ReadCurrent()
+        {
+            return this._userManager.GetUserAsync(this._contextAccessor.HttpContext?.User).Result;
         }
     }
 }

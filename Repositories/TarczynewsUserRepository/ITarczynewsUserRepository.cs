@@ -1,8 +1,9 @@
 ﻿using Tarczynews.Models;
 
-namespace Tarczynews.Repositories.TarczynewsUserRepository
+namespace Tarczynews.Repositories
 {
     public interface ITarczynewsUserRepository : IRepository<TarczynewsUser>
     {
+        TarczynewsUser ReadCurrent();
     }
 }

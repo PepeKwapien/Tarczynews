@@ -2,7 +2,6 @@
 using Tarczynews.Models;
 using Tarczynews.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
 namespace Tarczynews.Controllers
 {
@@ -10,10 +9,12 @@ namespace Tarczynews.Controllers
     public class CapsController : Controller
     {
         private readonly ITarczynCapRepository _tarczynCapRepository;
+        private readonly ITarczynewsUserRepository _tarczynewsUserRepository;
 
-        public CapsController(ITarczynCapRepository tarczynCapRepository)
+        public CapsController(ITarczynCapRepository tarczynCapRepository, ITarczynewsUserRepository tarczynewsUserRepository)
         {
             _tarczynCapRepository = tarczynCapRepository;
+            _tarczynewsUserRepository = tarczynewsUserRepository;
         }
 
         // GET: CapsController
@@ -25,7 +26,7 @@ namespace Tarczynews.Controllers
         // GET: CapsController/Details/5
         public ActionResult Details(int number)
         {
-            var cap = _tarczynCapRepository.ReadTarczynCapByNumber(number);
+            var cap = _tarczynCapRepository.ReadTarczynCapByNumberAndOwnerUsername(number, _tarczynewsUserRepository.ReadCurrent().UserName);
 
             if (cap == null)
             {
@@ -48,7 +49,14 @@ namespace Tarczynews.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(TarczynCap tarczynCap)
         {
-            var storedCap = _tarczynCapRepository.ReadTarczynCapByNumberAndOwnerUsername(tarczynCap.Number, User.Identity?.Name ?? "");
+            var user = this._tarczynewsUserRepository.ReadCurrent();
+            if (user == null || string.IsNullOrEmpty(user.UserName))
+            {
+                TempData["Error"] = "Unauthorized access. Try to log in again";
+
+                return RedirectToAction("Index", "Home");
+            }
+            var storedCap = _tarczynCapRepository.ReadTarczynCapByNumberAndOwnerUsername(tarczynCap.Number, user.UserName);
 
             if(storedCap != null)
             {
@@ -57,8 +65,22 @@ namespace Tarczynews.Controllers
                 return View(tarczynCap);
             }
 
+            tarczynCap.Owner = user;
+            
+            if(user.TarczynCaps != null)
+            {
+                user.TarczynCaps.Add(tarczynCap);
+            }
+            else
+            {
+                user.TarczynCaps = new List<TarczynCap>() { tarczynCap };
+            }
+
             _tarczynCapRepository.Create(tarczynCap);
             _tarczynCapRepository.Save();
+
+            _tarczynewsUserRepository.Update(user);
+            _tarczynewsUserRepository.Save();
 
             TempData["Success"] = $"Cap {tarczynCap.Number} was created successfully";
 
@@ -68,7 +90,7 @@ namespace Tarczynews.Controllers
         // GET: CapsController/Edit/5
         public ActionResult Edit(int number)
         {
-            var cap = _tarczynCapRepository.ReadTarczynCapByNumber(number);
+            var cap = _tarczynCapRepository.ReadTarczynCapByNumberAndOwnerUsername(number, _tarczynewsUserRepository.ReadCurrent().UserName);
 
             if (cap == null)
             {
@@ -86,7 +108,7 @@ namespace Tarczynews.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditPost(TarczynCap tarczynCap)
         {
-            var storedCap = _tarczynCapRepository.Read(tarczynCap.Id);
+            var storedCap = _tarczynCapRepository.ReadTarczynCapByNumberAndOwnerUsername(tarczynCap.Number, _tarczynewsUserRepository.ReadCurrent().UserName);
 
             if(storedCap == null)
             {
@@ -96,7 +118,7 @@ namespace Tarczynews.Controllers
             {
                 if (storedCap.Number != tarczynCap.Number)
                 {
-                    var storedCapWithNumber = _tarczynCapRepository.ReadTarczynCapByNumber(tarczynCap.Number);
+                    var storedCapWithNumber = _tarczynCapRepository.ReadTarczynCapByNumberAndOwnerUsername(tarczynCap.Number, _tarczynewsUserRepository.ReadCurrent().UserName);
 
                     if (storedCapWithNumber != null)
                     {
@@ -118,7 +140,7 @@ namespace Tarczynews.Controllers
         // GET: CapsController/Delete/5
         public ActionResult Delete(int number)
         {
-            var cap = _tarczynCapRepository.ReadTarczynCapByNumber(number);
+            var cap = _tarczynCapRepository.ReadTarczynCapByNumberAndOwnerUsername(number, _tarczynewsUserRepository.ReadCurrent().UserName);
 
             if (cap == null)
             {
@@ -137,7 +159,7 @@ namespace Tarczynews.Controllers
         public ActionResult DeletePost(Guid id)
         {
             var cap = _tarczynCapRepository.Read(id);
-            if (cap != null)
+            if (cap != null && _tarczynewsUserRepository.ReadCurrent().Id != (cap.Owner?.Id ?? ""))
             {
                 var number = cap.Number;
                 _tarczynCapRepository.Delete(id);

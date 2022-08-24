@@ -31,6 +31,7 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
     builder.Configuration.GetConnectionString("DefaultConnection")));*/
 
 builder.Services.AddScoped<ITarczynCapRepository, TarczynCapRepository>();
+builder.Services.AddScoped<ITarczynewsUserRepository, TarczynewsUserRepository>();
 
 var app = builder.Build();
 
