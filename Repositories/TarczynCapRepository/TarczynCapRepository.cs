@@ -60,9 +60,24 @@ namespace Tarczynews.Repositories
             return ReadAll().OrderBy(cap => cap.Number);
         }
 
+        public IEnumerable<TarczynCap> ReadAllTarczynCapsForUsernameSortedAscendingByNumber(string username)
+        {
+            return ReadAllTarczynCapsSortedAscendingByNumber().Where(cap => cap.Owner != null && cap.Owner.Email.Equals(username));
+        }
+
         public TarczynCap ReadTarczynCapByNumber(int number)
         {
             return ReadAll().FirstOrDefault(x => x.Number == number);
+        }
+
+        public TarczynCap ReadTarczynCapByNumberAndOwnerUsername(int number, string email)
+        {
+            return ReadAll().FirstOrDefault(x => x.Owner != null && x.Owner.Email.Equals(email) && x.Number == number);
+        }
+
+        public TarczynCap ReadTarczynCapByIdAndOwnerUsername(Guid id, string email)
+        {
+            return ReadAll().FirstOrDefault(x => x.Owner != null && x.Owner.Email.Equals(email) && x.Id == id);
         }
     }
 }
