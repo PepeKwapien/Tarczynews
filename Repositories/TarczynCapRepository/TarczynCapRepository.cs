@@ -74,5 +74,10 @@ namespace Tarczynews.Repositories
         {
             return ReadAll().FirstOrDefault(x => x.Owner != null && x.Owner.Email.Equals(email) && x.Number == number);
         }
+
+        public TarczynCap ReadTarczynCapByIdAndOwnerUsername(Guid id, string email)
+        {
+            return ReadAll().FirstOrDefault(x => x.Owner != null && x.Owner.Email.Equals(email) && x.Id == id);
+        }
     }
 }

@@ -107,7 +107,7 @@ namespace Tarczynews.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditPost(TarczynCap tarczynCap)
         {
-            var storedCap = _tarczynCapRepository.ReadTarczynCapByNumberAndOwnerUsername(tarczynCap.Number, _tarczynewsUserRepository.ReadCurrent().UserName);
+            var storedCap = _tarczynCapRepository.ReadTarczynCapByIdAndOwnerUsername(tarczynCap.Id, _tarczynewsUserRepository.ReadCurrent().UserName);
 
             if(storedCap == null)
             {
